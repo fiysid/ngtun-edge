@@ -1,3 +1,4 @@
+// +heroku goVersion go1.14
 module github.com/koaiwu/ngtun-edge
 
 go 1.14
