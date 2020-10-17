@@ -20,6 +20,7 @@ var (
 	baseCfg       = &baseConfig{}
 	pprofAddr     string
 	pprofEnabled  = os.Getenv("PROFILING") != ""
+	logEnabled    = os.Getenv("LOG") != ""
 )
 
 func init() {
@@ -60,9 +61,13 @@ func init() {
 			log.Log("$PORT must be set")
 			os.Exit(1)
 		}
-		fmt.Fprintf(os.Stdout, "gost %s (%s %s/%s)\n",
+		if !logEnabled {
+			gost.SetLogger(&gost.NopLogger{})
+		}
+		fmt.Fprintf(os.Stdout, "ngtun-edge %s (%s %s/%s)\n",
 			gost.Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
-		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://:%v?path=/ngtun-edge", port))
+		userpwd := os.Getenv("USER")
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v:%v?path=/ngtun-edge", userpwd, port))
 	}
 }
 
